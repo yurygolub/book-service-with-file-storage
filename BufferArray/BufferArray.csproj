@@ -18,9 +18,4 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\BookClass\BookClass.csproj" />
-      <ProjectReference Include="..\BufferArray\BufferArray.csproj" />
-      <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
-    </ItemGroup>
 </Project>

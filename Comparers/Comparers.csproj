@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <CodeAnalysisRuleSet>..\code-analysis.ruleset</CodeAnalysisRuleSet>
@@ -20,7 +21,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\BookClass\BookClass.csproj" />
-      <ProjectReference Include="..\BufferArray\BufferArray.csproj" />
-      <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
     </ItemGroup>
+
 </Project>
