@@ -55,8 +55,7 @@ namespace BookServiceTask
             using FileStream fileStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
             using BinaryReader binaryReader = new BinaryReader(fileStream);
 
-            int length = (int)binaryReader.BaseStream.Length;
-            List<Book> books = new List<Book>();
+            List<Book> bookCollection = new List<Book>();
             while (binaryReader.PeekChar() != -1)
             {
                 string author = binaryReader.ReadString();
@@ -70,10 +69,10 @@ namespace BookServiceTask
                 Book book = new Book(author, title, publisher, isbn) { Pages = pages, };
                 book.SetPrice(price, currency);
 
-                books.Add(book);
+                bookCollection.Add(book);
             }
 
-            return books;
+            return bookCollection;
         }
 
         /// <summary>
