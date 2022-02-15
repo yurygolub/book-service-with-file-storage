@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using BookClass;
 using Interfaces;
 
@@ -32,6 +33,72 @@ namespace BookServiceTask
             }
 
             this.books = new HashSet<Book>(books, new EqualityComparer());
+        }
+
+        /// <summary>
+        /// Read book collection from binary file.
+        /// </summary>
+        /// <param name="sourcePath">Path to source file.</param>
+        /// <returns>Book collection read from file.</returns>
+        public static IEnumerable<Book> ReadFromFile(string sourcePath)
+        {
+            if (string.IsNullOrWhiteSpace(sourcePath))
+            {
+                throw new ArgumentException($"{nameof(sourcePath)} cannot be null or empty or whitespace.", nameof(sourcePath));
+            }
+
+            if (!File.Exists(sourcePath))
+            {
+                throw new FileNotFoundException($"File '{sourcePath}' not found. Parameter name: {nameof(sourcePath)}.");
+            }
+
+            using FileStream fileStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
+            using BinaryReader binaryReader = new BinaryReader(fileStream);
+
+            int length = (int)binaryReader.BaseStream.Length;
+            List<Book> books = new List<Book>();
+            while (binaryReader.PeekChar() != -1)
+            {
+                string author = binaryReader.ReadString();
+                string title = binaryReader.ReadString();
+                string publisher = binaryReader.ReadString();
+                string isbn = binaryReader.ReadString();
+                int pages = binaryReader.ReadInt32();
+                decimal price = binaryReader.ReadDecimal();
+                string currency = binaryReader.ReadString();
+
+                Book book = new Book(author, title, publisher, isbn) { Pages = pages, };
+                book.SetPrice(price, currency);
+
+                books.Add(book);
+            }
+
+            return books;
+        }
+
+        /// <summary>
+        /// Saves books to binary file.
+        /// </summary>
+        /// <param name="destinationPath">Path to destination file.</param>
+        public void SaveToFile(string destinationPath)
+        {
+            if (string.IsNullOrWhiteSpace(destinationPath))
+            {
+                throw new ArgumentException($"{nameof(destinationPath)} cannot be null or empty or whitespace", nameof(destinationPath));
+            }
+
+            using FileStream fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write);
+            using BinaryWriter binaryWriter = new BinaryWriter(fileStream);
+            foreach (Book book in this.books)
+            {
+                binaryWriter.Write(book.Author);
+                binaryWriter.Write(book.Title);
+                binaryWriter.Write(book.Publisher);
+                binaryWriter.Write(book.ISBN);
+                binaryWriter.Write(book.Pages);
+                binaryWriter.Write(book.Price);
+                binaryWriter.Write(book.Currency);
+            }
         }
 
         /// <summary>
