@@ -120,5 +120,27 @@ namespace BookServiceTask.Tests.NUnitTests
                 yield return new TestCaseData(arg: Array.Empty<Book>());
             }
         }
+
+        public static IEnumerable<TestCaseData> TestCasesForSaveToFile
+        {
+            get
+            {
+                yield return new TestCaseData(arg:
+                    new Book[]
+                    {                        
+                        CreateBook("Jon Skeet", "C# in Depth", "Manning Publications", "9781617294532", 528, 27.99m, "USD"),
+                        CreateBook("Author", "Title", "Publisher", "3-598-21507-X", 150, 18m, "EUR"),
+                    });
+
+
+                Book CreateBook(string author, string title, string publisher, string isbn, int pages, decimal price, string currency)
+                {
+                    Book book = new Book(author, title, publisher, isbn) { Pages = pages };
+                    book.SetPrice(price, currency);
+
+                    return book;
+                }
+            }
+        }
     }
 }
