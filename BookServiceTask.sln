@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31911.196
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookServiceTask", "BookServiceTask\BookServiceTask.csproj", "{70D12589-D28C-4AD5-8092-E8903D17A686}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comparers", "Comparers\Comparers.csproj", "{BB05225D-1301-4534-A01D-EE3AA96919A9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Predicates", "Predicates\Predicates.csproj", "{5DD24469-C8AA-4B47-B23C-F454B59E4D24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookClass.Tests", "BookClass.Tests\BookClass.Tests.csproj", "{1A483B29-B88F-4655-A345-2CBF0A8CA360}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{5DD24469-C8AA-4B47-B23C-F454B59E4D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DD24469-C8AA-4B47-B23C-F454B59E4D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DD24469-C8AA-4B47-B23C-F454B59E4D24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A483B29-B88F-4655-A345-2CBF0A8CA360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A483B29-B88F-4655-A345-2CBF0A8CA360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A483B29-B88F-4655-A345-2CBF0A8CA360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A483B29-B88F-4655-A345-2CBF0A8CA360}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
