@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using VerificationService;
+
+#pragma warning disable CA1305 // Specify IFormatProvider
 
 namespace BookClass
 {
@@ -119,6 +122,25 @@ namespace BookClass
         public string Currency { get; private set; } = System.Globalization.RegionInfo.CurrentRegion.ISOCurrencySymbol;
 
         /// <summary>
+        /// Gets year of publish.
+        /// </summary>
+        /// <returns>The string "NYP" if book not published, and the year of publish if it is published.</returns>
+        public string Year
+        {
+            get
+            {
+                if (this.published)
+                {
+                    return this.datePublished.Year.ToString();
+                }
+                else
+                {
+                    return "NYP";
+                }
+            }
+        }
+
+        /// <summary>
         /// Equality operator.
         /// </summary>
         /// <param name="left">Left operand.</param>
@@ -179,6 +201,73 @@ namespace BookClass
         public static bool operator <=(Book left, Book right) => !(left is null) && left.CompareTo(right) <= 0;
 
         /// <summary>
+        /// Converts the string representation of a book to book class object.
+        /// </summary>
+        /// <param name="source">A string containing a book to convert.</param>
+        /// <returns>A book class object.</returns>
+        /// <exception cref="ArgumentNullException">Throw when source is null.</exception>
+        /// <exception cref="FormatException">Throw when source has invalid format.</exception>
+        public static Book Parse(string source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (!TryParse(source, out Book book))
+            {
+                throw new FormatException("Source string has invalid format.");
+            }
+
+            return book;
+        }
+
+        /// <summary>
+        /// Converts the string representation of a book to book class object. A return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="source">A string containing a book to convert.</param>
+        /// <param name="result">
+        /// When this method returns, contains the book class object contained in <paramref name="source"/>,
+        /// if the conversion succeeded, or <see langword="null"/> if the conversion failed.
+        /// </param>
+        /// <returns><see langword="true"/> if s was converted successfully; otherwise, <see langword="false"/>.</returns>
+        public static bool TryParse(string source, out Book result)
+        {
+            if (source is null)
+            {
+                result = null;
+                return false;
+            }
+
+            var elements = source.Split(',');
+
+            if (elements.Length != 8)
+            {
+                result = null;
+                return false;
+            }
+
+            var data = new
+            {
+                Title = elements[0].Trim('"'),
+                Author = elements[1],
+                Year = new DateTime(year: int.Parse(elements[2]), 1, 1),
+                Publisher = elements[3],
+                Pages = int.Parse(elements[4]),
+                Isbn = elements[5],
+                Price = int.Parse(elements[6]),
+                Currency = elements[7],
+            };
+
+            Book book = new Book(data.Author, data.Title, data.Publisher, data.Isbn) { Pages = data.Pages };
+            book.Publish(data.Year);
+            book.SetPrice(data.Price, data.Currency);
+
+            result = book;
+            return true;
+        }
+
+        /// <summary>
         /// Publishes the book if it has not yet been published.
         /// </summary>
         /// <param name="dateTime">Date of publish.</param>
@@ -193,6 +282,67 @@ namespace BookClass
         /// </summary>
         /// <returns>Representation of book.</returns>
         public override string ToString() => $"{this.Title} by {this.Author}";
+
+        /// <summary>
+        /// Returns string representation of book using the specified format.
+        /// </summary>
+        /// <param name="format">The format to use.</param>
+        /// <returns>The string representation of book in the specified format.</returns>
+        public string ToString(string format)
+        {
+            return this.ToString(format, CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Returns string representation of book using the specified format and culture-specific format information.
+        /// </summary>
+        /// <param name="format">The format to use.</param>
+        /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+        /// <returns>The string representation of book in the specified format.</returns>
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (string.IsNullOrEmpty(format))
+            {
+                format = "F";
+            }
+
+            if (formatProvider == null)
+            {
+                formatProvider = CultureInfo.CurrentCulture;
+            }
+
+            return format.ToUpperInvariant() switch
+            {
+                "A" => this.ToString() + ". " +
+                    $"{this.datePublished:yyyy}. " +
+                    $"{this.Publisher}. " +
+                    $"ISBN: {this.ISBN}. " +
+                    $"{this.Pages} pages. " +
+                    string.Format(formatProvider, "{0:C2}", this.Price),
+
+                "B" => this.ToString() + ". " +
+                    $"{this.datePublished:yyyy}. " +
+                    $"{this.Publisher}. " +
+                    $"ISBN: {this.ISBN}. " +
+                    $"{this.Pages} pages.",
+
+                "C" => this.ToString() + ". " +
+                    $"{this.datePublished:yyyy}. " +
+                    $"{this.Publisher}. " +
+                    $"{this.Pages} pages.",
+
+                "D" => this.ToString() + ". " +
+                    $"{this.datePublished:yyyy}. " +
+                    $"{this.Pages} pages.",
+
+                "E" => this.ToString() + " " +
+                    string.Format(formatProvider, "{0:C2}", this.Price),
+
+                "F" => this.ToString() + ".",
+
+                _ => throw new FormatException($"The {format} format string is not supported."),
+            };
+        }
 
         /// <summary>
         /// Determines whether the specified object is equal to the current object.
